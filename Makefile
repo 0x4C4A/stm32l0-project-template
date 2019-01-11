@@ -49,7 +49,7 @@ LIBS =
 LINKER_SCRIPT = ./linker/linker_stm32l011xx.ld
 
 # Dirs
-OBJS  = $(STARTUP:.s=.o) $(SRC:.c=.o)
+OBJS  = $(STARTUP:.s=.o) $(addsuffix .o, $(basename $(SRC)))
 INCDIR  = $(patsubst %,-I%, $(INCDIRS))
 LIBDIR  = $(patsubst %,-L%, $(LIBDIRS))
 LIB     = $(patsubst %,-l%, $(LIBS))
@@ -68,6 +68,9 @@ all: $(OBJS) $(PROJECT).elf  $(PROJECT).hex $(PROJECT).bin
 	$(TRGT)size $(PROJECT).elf
  
 %.o: %.c
+	$(CC) -c $(CPFLAGS) -I . $(INCDIR) $< -o $@
+
+%.o: %.cpp
 	$(CC) -c $(CPFLAGS) -I . $(INCDIR) $< -o $@
 
 %.o: %.s
@@ -100,6 +103,6 @@ clean:
 	-rm -rf $(PROJECT).map
 	-rm -rf $(PROJECT).hex
 	-rm -rf $(PROJECT).bin
-	-rm -rf $(SRC:.c=.lst)
+	-rm -rf $(addsuffix .lst, $(basename $(SRC)))
 	-rm -rf $(ASRC:.s=.lst)
 	-rm -rf $(STARTUP:.s=.lst)
