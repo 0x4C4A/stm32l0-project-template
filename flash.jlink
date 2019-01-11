@@ -1,0 +1,4 @@
+loadfile MyProject.bin
+r
+g
+exit

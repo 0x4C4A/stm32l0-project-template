@@ -2,7 +2,7 @@
 PROJECT = MyProject
 
 # List all C defines here
-DEFS = -DSTM32L0 -DSTM32L073xx
+DEFS = -DSTM32L0 -DSTM32L011xx
 #DEFS += -DDEBUG
 
 # Debug level
@@ -13,7 +13,7 @@ DEBUG = -g3
 OPT = -Os
 
 # MCU type
-MCU  = cortex-m0plus
+MCU  = cortex-m0
 
 # Tools
 PREFIX = arm-none-eabi-
@@ -34,7 +34,7 @@ SRC += ./src/system_syscalls.c
 SRC += ./src/system_stm32l0xx.c
 
 # List assembly startup source file here
-STARTUP = ./startup/startup_stm32l073xx.s
+STARTUP = ./startup/startup_stm32l011xx.s
  
 # List all include directories here
 INCDIRS = ./inc ./inc/CMSIS/core ./inc/CMSIS/device
@@ -46,7 +46,7 @@ LIBDIRS +=
 LIBS =
  
 # Define linker script file here
-LINKER_SCRIPT = ./linker/linker_stm32l073xx.ld
+LINKER_SCRIPT = ./linker/linker_stm32l011xx.ld
 
 # Dirs
 OBJS  = $(STARTUP:.s=.o) $(SRC:.c=.o)
@@ -84,6 +84,9 @@ all: $(OBJS) $(PROJECT).elf  $(PROJECT).hex $(PROJECT).bin
 
 flash: $(PROJECT).bin
 	$(STLINK)/st-flash write $(PROJECT).bin 0x8000000
+
+jflash: $(PROJECT).bin
+	JLinkExe -if swd -device STM32L011G4 -speed 1000 -autoconnect 1 -commanderscript flash.jlink
 
 erase:
 	$(STLINK)/st-flash erase
